@@ -1,0 +1,136 @@
+{% extends 'properties/base.html' %}
+
+{% block title %}{{ auction.title }} - Subasta{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'properties:home' %}">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'properties:auction_list' %}">Subastas</a></li>
+            <li class="breadcrumb-item active">{{ auction.title }}</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <span class="badge bg-danger mb-3">SUBASTA EN VIVO</span>
+                    <h1 class="mb-3">{{ auction.title }}</h1>
+                    
+                    {% if auction.property.main_image %}
+                    <img src="{{ auction.property.main_image.url }}" class="img-fluid rounded mb-4" alt="{{ auction.title }}">
+                    {% else %}
+                    <img src="https://via.placeholder.com/800x400" class="img-fluid rounded mb-4" alt="{{ auction.title }}">
+                    {% endif %}
+                    
+                    <h3>Descripción</h3>
+                    <p>{{ auction.description|linebreaks }}</p>
+                    
+                    <hr>
+                    
+                    <h3>Detalles de la Propiedad</h3>
+                    <p>{{ auction.property.description|linebreaks }}</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-4 mb-3">
+                            <i class="bi bi-door-open text-primary"></i>
+                            <strong>Habitaciones:</strong> {{ auction.property.bedrooms }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <i class="bi bi-droplet text-primary"></i>
+                            <strong>Baños:</strong> {{ auction.property.bathrooms }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <i class="bi bi-arrows-angle-expand text-primary"></i>
+                            <strong>Área:</strong> {{ auction.property.area_total }} m²
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Historial de Pujas -->
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Historial de Pujas ({{ total_bids }})</h4>
+                </div>
+                <div class="card-body">
+                    {% if recent_bids %}
+                    <div class="list-group">
+                        {% for bid in recent_bids %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ bid.client.name }}</strong>
+                                    <span class="text-muted small">{{ bid.created_at|date:"d/m/Y H:i" }}</span>
+                                </div>
+                                <span class="badge bg-primary">${{ bid.amount|floatformat:0 }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center">Aún no hay pujas para esta subasta.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar de Puja -->
+        <div class="col-lg-4">
+            <div class="card shadow sticky-top" style="top: 20px;">
+                <div class="card-body">
+                    <h3 class="text-danger mb-3">SUBASTA EN VIVO</h3>
+                    
+                    <div class="mb-4">
+                        <label class="text-muted">Precio Actual</label>
+                        <h2 class="text-primary">${{ auction.current_price|floatformat:0 }}</h2>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="text-muted">Incremento Mínimo</label>
+                        <p class="h5">${{ auction.min_bid_increment|floatformat:0 }}</p>
+                    </div>
+                    
+                    {% if auction.buy_now_price %}
+                    <div class="mb-4">
+                        <label class="text-muted">Precio Compra Ya</label>
+                        <p class="h5 text-success">${{ auction.buy_now_price|floatformat:0 }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <hr>
+                    
+                    <div class="mb-3">
+                        <i class="bi bi-clock"></i> 
+                        <strong>Finaliza:</strong>
+                        <br>{{ auction.end_date|date:"d/m/Y H:i" }}
+                    </div>
+                    
+                    <div class="mb-4">
+                        <i class="bi bi-people"></i>
+                        <strong>Participantes:</strong> {{ auction.total_bidders }}
+                    </div>
+                    
+                    <hr>
+                    
+                    {% if user.is_authenticated %}
+                    <button class="btn btn-danger w-100 mb-2" disabled>
+                        <i class="bi bi-gavel"></i> Pujar (Funcionalidad en desarrollo)
+                    </button>
+                    {% else %}
+                    <a href="{% url 'admin:login' %}" class="btn btn-primary w-100 mb-2">
+                        Iniciar sesión para pujar
+                    </a>
+                    {% endif %}
+                    
+                    <a href="{% url 'properties:contact' %}?property={{ auction.property.id }}" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-envelope"></i> Más información
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

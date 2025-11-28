@@ -1,0 +1,145 @@
+{% extends 'properties/base.html' %}
+
+{% block title %}Propiedades - InmobiliariaApp{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">Catálogo de Propiedades</h1>
+    
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Tipo de Transacción</label>
+                    <select name="transaction_type" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="sale" {% if filters.transaction_type == 'sale' %}selected{% endif %}>Venta</option>
+                        <option value="rent" {% if filters.transaction_type == 'rent' %}selected{% endif %}>Arriendo</option>
+                        <option value="auction" {% if filters.transaction_type == 'auction' %}selected{% endif %}>Subasta</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-3">
+                    <label class="form-label">Tipo de Propiedad</label>
+                    <select name="property_type" class="form-select">
+                        <option value="">Todos</option>
+                        {% for type in property_types %}
+                        <option value="{{ type.slug }}" {% if filters.property_type == type.slug %}selected{% endif %}>
+                            {{ type.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="col-md-3">
+                    <label class="form-label">Ciudad</label>
+                    <select name="city" class="form-select">
+                        <option value="">Todas</option>
+                        {% for city in cities %}
+                        <option value="{{ city.slug }}" {% if filters.city == city.slug %}selected{% endif %}>
+                            {{ city.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="col-md-3">
+                    <label class="form-label">Habitaciones</label>
+                    <select name="bedrooms" class="form-select">
+                        <option value="">Todas</option>
+                        <option value="1" {% if filters.bedrooms == '1' %}selected{% endif %}>1+</option>
+                        <option value="2" {% if filters.bedrooms == '2' %}selected{% endif %}>2+</option>
+                        <option value="3" {% if filters.bedrooms == '3' %}selected{% endif %}>3+</option>
+                        <option value="4" {% if filters.bedrooms == '4' %}selected{% endif %}>4+</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-12">
+                    <label class="form-label">Buscar</label>
+                    <input type="text" name="search" class="form-control" placeholder="Buscar por título, dirección..." value="{{ filters.search }}">
+                </div>
+                
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                    <a href="{% url 'properties:property_list' %}" class="btn btn-outline-secondary">
+                        Limpiar filtros
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Resultados -->
+    <div class="row">
+        {% for property in properties %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                {% if property.main_image %}
+                <img src="{{ property.main_image.url }}" class="card-img-top" alt="{{ property.title }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <img src="https://via.placeholder.com/400x200" class="card-img-top" alt="{{ property.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <span class="badge bg-{{ property.status.color|default:'primary' }} mb-2">
+                        {{ property.get_transaction_type_display }}
+                    </span>
+                    <h5 class="card-title">{{ property.title }}</h5>
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-geo-alt"></i> {{ property.city.name }}
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="h5 mb-0 text-primary">${{ property.get_price|floatformat:0 }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between text-muted small mb-3">
+                        <span><i class="bi bi-door-open"></i> {{ property.bedrooms }}</span>
+                        <span><i class="bi bi-droplet"></i> {{ property.bathrooms }}</span>
+                        <span><i class="bi bi-arrows-angle-expand"></i> {{ property.area_total }} m²</span>
+                    </div>
+                    <a href="{% url 'properties:property_detail' property.slug %}" class="btn btn-outline-primary w-100">
+                        Ver detalles
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="bi bi-info-circle"></i> No se encontraron propiedades con los filtros seleccionados.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Paginación -->
+    {% if is_paginated %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1">Primera</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+            </li>
+            {% endif %}
+            
+            <li class="page-item active">
+                <span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+            </li>
+            
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Última</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

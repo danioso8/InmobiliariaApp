@@ -1,0 +1,218 @@
+{% extends 'properties/base.html' %}
+
+{% block title %}{{ property.title }} - InmobiliariaApp{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'properties:home' %}">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'properties:property_list' %}">Propiedades</a></li>
+            <li class="breadcrumb-item active">{{ property.title }}</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <!-- Imagen Principal -->
+        <div class="col-lg-8">
+            {% if property.main_image %}
+            <img src="{{ property.main_image.url }}" class="img-fluid rounded mb-3" alt="{{ property.title }}">
+            {% else %}
+            <img src="https://via.placeholder.com/800x500" class="img-fluid rounded mb-3" alt="{{ property.title }}">
+            {% endif %}
+            
+            <!-- Galería -->
+            {% if gallery %}
+            <div class="row g-2 mb-4">
+                {% for image in gallery %}
+                <div class="col-3">
+                    <img src="{{ image.image.url }}" class="img-fluid rounded" alt="{{ image.title }}">
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <!-- Descripción -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3>Descripción</h3>
+                    <p>{{ property.description|linebreaks }}</p>
+                </div>
+            </div>
+            
+            <!-- Características -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="mb-4">Características</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <i class="bi bi-door-open text-primary"></i>
+                            <strong>Habitaciones:</strong> {{ property.bedrooms }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <i class="bi bi-droplet text-primary"></i>
+                            <strong>Baños:</strong> {{ property.bathrooms }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <i class="bi bi-arrows-angle-expand text-primary"></i>
+                            <strong>Área Total:</strong> {{ property.area_total }} m²
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <i class="bi bi-car-front text-primary"></i>
+                            <strong>Parqueaderos:</strong> {{ property.parking_spaces }}
+                        </div>
+                        {% if property.area_built %}
+                        <div class="col-md-6 mb-3">
+                            <i class="bi bi-building text-primary"></i>
+                            <strong>Área Construida:</strong> {{ property.area_built }} m²
+                        </div>
+                        {% endif %}
+                        <div class="col-md-6 mb-3">
+                            <i class="bi bi-layers text-primary"></i>
+                            <strong>Pisos:</strong> {{ property.floors }}
+                        </div>
+                    </div>
+                    
+                    <h4 class="mt-4 mb-3">Comodidades</h4>
+                    <div class="row">
+                        {% if property.has_pool %}
+                        <div class="col-md-4 mb-2">
+                            <i class="bi bi-check-circle-fill text-success"></i> Piscina
+                        </div>
+                        {% endif %}
+                        {% if property.has_gym %}
+                        <div class="col-md-4 mb-2">
+                            <i class="bi bi-check-circle-fill text-success"></i> Gimnasio
+                        </div>
+                        {% endif %}
+                        {% if property.has_garden %}
+                        <div class="col-md-4 mb-2">
+                            <i class="bi bi-check-circle-fill text-success"></i> Jardín
+                        </div>
+                        {% endif %}
+                        {% if property.has_balcony %}
+                        <div class="col-md-4 mb-2">
+                            <i class="bi bi-check-circle-fill text-success"></i> Balcón
+                        </div>
+                        {% endif %}
+                        {% if property.has_elevator %}
+                        <div class="col-md-4 mb-2">
+                            <i class="bi bi-check-circle-fill text-success"></i> Ascensor
+                        </div>
+                        {% endif %}
+                        {% if property.has_security %}
+                        <div class="col-md-4 mb-2">
+                            <i class="bi bi-check-circle-fill text-success"></i> Vigilancia
+                        </div>
+                        {% endif %}
+                        {% if property.is_furnished %}
+                        <div class="col-md-4 mb-2">
+                            <i class="bi bi-check-circle-fill text-success"></i> Amoblado
+                        </div>
+                        {% endif %}
+                        {% if property.allows_pets %}
+                        <div class="col-md-4 mb-2">
+                            <i class="bi bi-check-circle-fill text-success"></i> Acepta Mascotas
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Información de Precio -->
+            <div class="card mb-4 shadow">
+                <div class="card-body">
+                    <h2 class="text-primary mb-3">${{ property.get_price|floatformat:0 }}</h2>
+                    <span class="badge bg-primary mb-3">{{ property.get_transaction_type_display }}</span>
+                    
+                    {% if property.price_admin > 0 %}
+                    <p class="text-muted">Administración: ${{ property.price_admin|floatformat:0 }}/mes</p>
+                    {% endif %}
+                    
+                    <hr>
+                    
+                    <p class="mb-2">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <strong>Ubicación:</strong>
+                    </p>
+                    <p class="text-muted">
+                        {{ property.address }}<br>
+                        {{ property.neighborhood }}{% if property.neighborhood %},{% endif %} {{ property.city.name }}
+                    </p>
+                    
+                    <p class="mb-2">
+                        <i class="bi bi-building"></i>
+                        <strong>Tipo:</strong> {{ property.property_type.name }}
+                    </p>
+                    
+                    <p class="mb-2">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Estado:</strong> {{ property.status.name }}
+                    </p>
+                    
+                    <hr>
+                    
+                    <a href="{% url 'properties:contact' %}?property={{ property.id }}" class="btn btn-primary w-100 mb-2">
+                        <i class="bi bi-envelope"></i> Contactar
+                    </a>
+                    
+                    {% if property.agent and property.agent.whatsapp %}
+                    <a href="https://wa.me/{{ property.agent.whatsapp }}" target="_blank" class="btn btn-success w-100">
+                        <i class="bi bi-whatsapp"></i> WhatsApp
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Información del Agente -->
+            {% if property.agent %}
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <h5>Agente Inmobiliario</h5>
+                    {% if property.agent.photo %}
+                    <img src="{{ property.agent.photo.url }}" class="rounded-circle mb-3" width="80" height="80" alt="{{ property.agent }}">
+                    {% endif %}
+                    <h6>{{ property.agent }}</h6>
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-telephone"></i> {{ property.agent.phone }}
+                    </p>
+                    <p class="text-muted">
+                        <i class="bi bi-envelope"></i> {{ property.agent.email }}
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Propiedades Similares -->
+    {% if similar_properties %}
+    <div class="mt-5">
+        <h3 class="mb-4">Propiedades Similares</h3>
+        <div class="row">
+            {% for similar in similar_properties %}
+            <div class="col-md-3 mb-3">
+                <div class="card h-100">
+                    {% if similar.main_image %}
+                    <img src="{{ similar.main_image.url }}" class="card-img-top" alt="{{ similar.title }}" style="height: 150px; object-fit: cover;">
+                    {% else %}
+                    <img src="https://via.placeholder.com/300x150" class="card-img-top" alt="{{ similar.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h6 class="card-title">{{ similar.title|truncatewords:5 }}</h6>
+                        <p class="text-primary mb-2">${{ similar.get_price|floatformat:0 }}</p>
+                        <a href="{% url 'properties:property_detail' similar.slug %}" class="btn btn-sm btn-outline-primary w-100">
+                            Ver más
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

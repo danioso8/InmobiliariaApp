@@ -1,0 +1,302 @@
+{% extends 'properties/base.html' %}
+
+{% block title %}Panel de Administración - InmobiliariaApp{% endblock %}
+
+{% block content %}
+<div class="container-fluid my-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2 bg-light">
+            <div class="list-group list-group-flush">
+                <a href="{% url 'admin_panel:dashboard' %}" class="list-group-item list-group-item-action active">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+                <a href="{% url 'admin:properties_property_changelist' %}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-house"></i> Propiedades
+                </a>
+                <a href="{% url 'admin:properties_auction_changelist' %}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-gavel"></i> Subastas
+                </a>
+                <a href="{% url 'admin:properties_agent_changelist' %}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-person-badge"></i> Agentes
+                </a>
+                <a href="{% url 'admin:properties_client_changelist' %}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-people"></i> Clientes
+                </a>
+                <a href="{% url 'admin:properties_contactinquiry_changelist' %}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-envelope"></i> Consultas
+                </a>
+                <a href="{% url 'admin:properties_visitrequest_changelist' %}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-calendar-check"></i> Visitas
+                </a>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-md-10">
+            <h1 class="mb-4">Panel de Administración</h1>
+            
+            <!-- Estadísticas -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-uppercase mb-1">Propiedades</h6>
+                                    <h2 class="mb-0">{{ total_properties }}</h2>
+                                </div>
+                                <i class="bi bi-house-door display-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-uppercase mb-1">Agentes</h6>
+                                    <h2 class="mb-0">{{ total_agents }}</h2>
+                                </div>
+                                <i class="bi bi-person-badge display-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-uppercase mb-1">Clientes</h6>
+                                    <h2 class="mb-0">{{ total_clients }}</h2>
+                                </div>
+                                <i class="bi bi-people display-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-uppercase mb-1">Consultas</h6>
+                                    <h2 class="mb-0">{{ pending_inquiries }}</h2>
+                                </div>
+                                <i class="bi bi-envelope display-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <!-- Propiedades Recientes -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-house"></i> Propiedades Recientes
+                            </h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Propiedad</th>
+                                            <th>Ciudad</th>
+                                            <th>Precio</th>
+                                            <th>Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for property in recent_properties %}
+                                        <tr>
+                                            <td>
+                                                <a href="{% url 'admin:properties_property_change' property.id %}">
+                                                    {{ property.title|truncatewords:5 }}
+                                                </a>
+                                            </td>
+                                            <td>{{ property.city.name }}</td>
+                                            <td class="text-nowrap">${{ property.get_price|floatformat:0 }}</td>
+                                            <td>
+                                                <span class="badge bg-success">{{ property.status.name }}</span>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted">No hay propiedades</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <a href="{% url 'admin:properties_property_changelist' %}" class="btn btn-sm btn-outline-primary">
+                                Ver todas <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Consultas Recientes -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-envelope"></i> Consultas Recientes
+                            </h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="list-group list-group-flush">
+                                {% for inquiry in recent_inquiries %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">{{ inquiry.name }}</h6>
+                                            <p class="mb-1 small text-muted">{{ inquiry.message|truncatewords:10 }}</p>
+                                            <small class="text-muted">{{ inquiry.created_at|date:"d/m/Y H:i" }}</small>
+                                        </div>
+                                        <span class="badge {% if inquiry.is_read %}bg-secondary{% else %}bg-warning{% endif %}">
+                                            {% if inquiry.is_read %}Leído{% else %}Nuevo{% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <div class="list-group-item text-center text-muted">
+                                    No hay consultas
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <a href="{% url 'admin:properties_contactinquiry_changelist' %}" class="btn btn-sm btn-outline-primary">
+                                Ver todas <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <!-- Visitas Pendientes -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-calendar-check"></i> Visitas Pendientes
+                            </h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="list-group list-group-flush">
+                                {% for visit in pending_visit_requests %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">{{ visit.client.name }}</h6>
+                                            <p class="mb-1 small">{{ visit.property.title|truncatewords:8 }}</p>
+                                            <small class="text-muted">
+                                                <i class="bi bi-calendar"></i> {{ visit.preferred_date|date:"d/m/Y" }}
+                                                <i class="bi bi-clock"></i> {{ visit.preferred_time|time:"H:i" }}
+                                            </small>
+                                        </div>
+                                        <span class="badge bg-warning">Pendiente</span>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <div class="list-group-item text-center text-muted">
+                                    No hay visitas pendientes
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <a href="{% url 'admin:properties_visitrequest_changelist' %}?status=pending" class="btn btn-sm btn-outline-primary">
+                                Ver todas <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Subastas Activas -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-gavel"></i> Subastas Activas
+                            </h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="list-group list-group-flush">
+                                {% for auction in active_auctions %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">{{ auction.title|truncatewords:8 }}</h6>
+                                            <p class="mb-1">
+                                                <span class="text-primary fw-bold">${{ auction.current_price|floatformat:0 }}</span>
+                                            </p>
+                                            <small class="text-muted">
+                                                <i class="bi bi-people"></i> {{ auction.total_bids }} pujas
+                                            </small>
+                                        </div>
+                                        <span class="badge bg-danger">Activa</span>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <div class="list-group-item text-center text-muted">
+                                    No hay subastas activas
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <a href="{% url 'admin:properties_auction_changelist' %}?status=active" class="btn btn-sm btn-outline-primary">
+                                Ver todas <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Accesos Rápidos -->
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Accesos Rápidos</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'admin:properties_property_add' %}" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-plus-circle"></i><br>Nueva Propiedad
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'admin:properties_auction_add' %}" class="btn btn-outline-danger w-100">
+                                <i class="bi bi-plus-circle"></i><br>Nueva Subasta
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'admin:properties_agent_add' %}" class="btn btn-outline-success w-100">
+                                <i class="bi bi-plus-circle"></i><br>Nuevo Agente
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'admin:properties_client_add' %}" class="btn btn-outline-info w-100">
+                                <i class="bi bi-plus-circle"></i><br>Nuevo Cliente
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
