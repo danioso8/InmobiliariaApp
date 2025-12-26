@@ -241,7 +241,7 @@ Si encuentras algún problema:
 
 ## 🎉 ¡Felicidades!
 
-Tu aplicación de Bienes Raíces JH ahora está en producción con:
+Tu aplicación de Empresa G&D Inmobiliario ahora está en producción con:
 - ✅ Base de datos PostgreSQL independiente
 - ✅ Archivos estáticos optimizados con WhiteNoise
 - ✅ SSL/HTTPS automático

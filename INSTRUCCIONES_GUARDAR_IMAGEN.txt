@@ -1,0 +1,39 @@
+========================================
+CÓMO AGREGAR LA IMAGEN DEL EDIFICIO ISMA
+========================================
+
+PASO 1: Guardar la imagen
+--------------------------
+1. Descarga la imagen del Edificio ISMA de tu mensaje/chat
+2. Guárdala con el nombre EXACTO: edificio-isma.jpg
+3. Cópiala a esta carpeta:
+   d:\ESCRITORIO\InmobiliariaApp\properties\static\img\
+
+PASO 2: Verificar
+-----------------
+La ruta completa debe ser:
+d:\ESCRITORIO\InmobiliariaApp\properties\static\img\edificio-isma.jpg
+
+PASO 3: Actualizar el código (opcional)
+----------------------------------------
+Si ya guardaste la imagen, cambia en home.html la línea:
+
+DE:
+<img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop" 
+
+A:
+<img src="{% static 'img/edificio-isma.jpg' %}"
+
+PASO 4: Recargar la página
+---------------------------
+1. Guarda los cambios
+2. Recarga el navegador (Ctrl + F5)
+3. La imagen debería aparecer
+
+NOTA TEMPORAL:
+--------------
+Mientras tanto, estoy usando una imagen temporal de un edificio
+empresarial profesional desde Unsplash. Una vez que agregues la
+imagen del Edificio ISMA real, la landing page se verá aún mejor.
+
+========================================

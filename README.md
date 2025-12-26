@@ -1,6 +1,16 @@
-# 🏠 Bienes Raíces JH - Sistema Inmobiliario
+# 🏠 Empresa G&D Inmobiliario - Sistema Inmobiliario
 
-Sistema completo de gestión inmobiliaria con catálogo de propiedades, subastas y panel administrativo.
+Sistema completo de gestión inmobiliaria profesional para Empresa G&D Inmobiliario, ubicado en el Edificio Empresarial ISMA, Bello, Colombia.
+
+## 🏢 Información de la Empresa
+
+**Nombre**: Empresa G&D Inmobiliario  
+**Ubicación**: CRA 50 # 37-13, Oficina 609, Edificio Empresarial ISMA  
+**Ciudad**: Bello, Colombia  
+**Teléfono**: +57 301 342 1846  
+**Email**: grupo.bienes.raices.j.h@gmail.com  
+**Asesor Principal**: Andrés Villegas  
+**Horario**: Lunes - Viernes: 8:00 AM - 6:00 PM | Sábados: 9:00 AM - 1:00 PM  
 
 ## 🚀 Características
 
@@ -11,7 +21,9 @@ Sistema completo de gestión inmobiliaria con catálogo de propiedades, subastas
 - ✅ Sistema de contacto y solicitudes de visita
 - ✅ Galería de imágenes
 - ✅ Filtros avanzados de búsqueda
-- ✅ Diseño responsive y moderno
+- ✅ Diseño responsive y moderno con glassmorphism
+- ✅ Integración con WhatsApp y Google Maps
+- ✅ Sección destacada de la oficina con imagen
 
 ## 📋 Requisitos
 
@@ -39,13 +51,22 @@ source venv/bin/activate  # Linux/Mac
 pip install -r requirements.txt
 ```
 
-4. **Configurar variables de entorno**
+4. **Guardar la imagen del edificio**
+```bash
+# Opción 1: Usar el script automático
+python copiar_imagen_edificio.py
+
+# Opción 2: Manual - Guarda la imagen del Edificio ISMA como:
+# properties/static/img/edificio-isma.jpg
+```
+
+5. **Configurar variables de entorno**
 ```bash
 cp .env.example .env
 # Editar .env con tus configuraciones
 ```
 
-5. **Aplicar migraciones**
+6. **Aplicar migraciones**
 ```bash
 python manage.py migrate
 ```
@@ -174,7 +195,7 @@ InmobiliariaApp/
 
 ## 📧 Contacto
 
-Para soporte o consultas sobre el proyecto, contactar al equipo de Bienes Raíces JH.
+Para soporte o consultas sobre el proyecto, contactar al equipo de Empresa G&D Inmobiliario.
 
 ## 📄 Licencia
 
